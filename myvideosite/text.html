@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swipe to Next Video</title>
+<style>
+  body {
+    background: #111;
+    color: white;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  video {
+    width: 360px;
+    height: 640px;
+    background: black;
+  }
+  .hint {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+
+<video id="player" autoplay muted controls></video>
+<div class="hint">Swipe up or press ↑ for next, swipe down or press ↓ for previous</div>
+
+<script>
+  // List your videos here:
+  const videos = [
+    "video1.mp4",
+    "video2.mp4",
+    "video3.mp4"
+  ];
+
+  let index = 0;
+  const player = document.getElementById('player');
+  player.src = videos[index];
+
+  // Function to load a video
+  function loadVideo(i) {
+    if (i < 0) i = videos.length - 1;
+    if (i >= videos.length) i = 0;
+    index = i;
+    player.src = videos[index];
+    player.play();
+  }
+
+  // Keyboard up/down arrows
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') loadVideo(index + 1);
+    if (e.key === 'ArrowDown') loadVideo(index - 1);
+  });
+
+  // Touch swipe detection
+  let startY = 0;
+  document.body.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+  });
+
+  document.body.addEventListener('touchend', (e) => {
+    let endY = e.changedTouches[0].clientY;
+    if (startY - endY > 50) {
+      // Swipe up → next video
+      loadVideo(index + 1);
+    } else if (endY - startY > 50) {
+      // Swipe down → previous video
+      loadVideo(index - 1);
+    }
+  });
+</script>
+
+</body>
+</html>
